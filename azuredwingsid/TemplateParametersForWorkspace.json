@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "azuredwingsid"
+		},
+		"LS_Serverless_password": {
+			"value": ""
+		},
+		"azuredwingsid-WorkspaceDefaultSqlServer_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:azuredwingsid.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"ExtLake_properties_typeProperties_url": {
+			"value": "https://azuredwhlakesid.dfs.core.windows.net/"
+		},
+		"LS_Serverless_properties_typeProperties_server": {
+			"value": "azuredwingsid-ondemand.sql.azuresynapse.net"
+		},
+		"LS_Serverless_properties_typeProperties_database": {
+			"value": "SalesDWH"
+		},
+		"LS_Serverless_properties_typeProperties_userName": {
+			"value": "adminsid"
+		},
+		"Ls_datalake_properties_typeProperties_url": {
+			"value": "https://azuredwhlakesid.dfs.core.windows.net/"
+		},
+		"azuredwingsid-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://datalakesid.dfs.core.windows.net"
+		}
+	}
+}
