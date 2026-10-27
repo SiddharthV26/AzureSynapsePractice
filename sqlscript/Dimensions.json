@@ -1,0 +1,17 @@
+{
+	"name": "Dimensions",
+	"properties": {
+		"content": {
+			"query": "-----------------\n--Dim Customer\n----------------  \nDROP EXTERNAL Table gold.dimCustomer \n    IF NOT EXISTS (SELECT* FROM sys.tables AS t JOIN sys.schemas AS s ON t.schema_id=s.schema_id\n                        WHERE t.name='dimCustomer' and s.name='gold')\n        CREATE EXTERNAL Table gold.dimCustomer\n        WITH\n    (\n        LOCATION ='DimCustomer',\n        DATA_SOURCE=gold_source,\n        FILE_FORMAT=parquet\n    )\n        AS\n    SELECT *, ROW_NUMBER() OVER (Order BY T.CustomerID) AS DimCustomerKey\n    FROM\n        (SELECT\n            DISTINCT \n            CustomerID,\n            CustomerName,\n            CustomerEmail,\n            Domain  \n        FROM\n            silver.silverTable\n        ) T\n            \n--Select * from gold.dimCustomer\n\n-----------------\n--Dim Product\n----------------   \n    IF NOT EXISTS (SELECT* FROM sys.tables AS t JOIN sys.schemas AS s ON t.schema_id=s.schema_id\n                        WHERE t.name='dimProduct' and s.name='gold')\n        CREATE EXTERNAL Table gold.dimProduct\n        WITH\n    (\n        LOCATION ='DimProduct',\n        DATA_SOURCE=gold_source,\n        FILE_FORMAT=parquet\n    )\n        AS\n    SELECT *,ROW_NUMBER() OVER (Order BY T.ProductID) AS DimProductKey\n    FROM\n        (SELECT\n            DISTINCT \n            ProductID,\n            ProductName,\n            ProductCategory\n            \n        FROM\n            silver.silverTable\n        ) T\n\n--SELECT * FROM gold.dimProduct\n\n-----------------\n--Dim Geography\n----------------   \n    IF NOT EXISTS (SELECT* FROM sys.tables AS t JOIN sys.schemas AS s ON t.schema_id=s.schema_id\n                        WHERE t.name='dimGeography' and s.name='gold')\n                    \n        CREATE EXTERNAL Table gold.dimGeography\n        WITH\n    (\n        LOCATION ='Geography',\n        DATA_SOURCE=gold_source,\n        FILE_FORMAT=parquet\n    )\n        AS\n        SELECT *,ROW_NUMBER() OVER (Order BY T.RegionID) AS DimGeographyKey\n        FROM\n        (SELECT\n            DISTINCT \n            RegionID,\n            RegionName,\n            Country\n        \n        FROM\n            silver.silverTable\n        ) T\n            \nselect * FROM gold.dimGeography\n\nselect * from silver.silverTable\n\n-----------------\n--Dim Orders\n----------------  \n    IF NOT EXISTS (SELECT* FROM sys.tables AS t JOIN sys.schemas AS s ON t.schema_id=s.schema_id\n                        WHERE t.name='dimOrders' and s.name='gold')\n        CREATE EXTERNAL Table gold.dimOrders\n        WITH\n    (\n        LOCATION ='Orders',\n        DATA_SOURCE=gold_source,\n        FILE_FORMAT=parquet\n    )\n        AS\n        \n        SELECT\n            DISTINCT\n            OrderID,\n            CustomerID,\n            CustomerName,\n            CustomerEmail,\n            ProductID,\n            ProductName,ProductCategory, \n            RegionID,\n            RegionName,\n            Country,\n            Domain,\n            ROW_NUMBER() OVER (Order BY CustomerID) AS DimOrdersKey\n        FROM\n            silver.silverTable\n        \n\nselect * from  gold.dimOrders\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "SalesDWH",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
